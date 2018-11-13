@@ -42,17 +42,32 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         return '<User: {}>'.format(self.username)
 
+# Set up user_loader
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
 
 class ClientType(enum.Enum):
     CLIENT_A = "Client A"
     CLIENT_B = "Client B"
     CLIENT_C = "Client C"
 
+    @classmethod
+    def choices(cls):
+        return [(choice.name, choice.name) for choice in cls]
+
+
 class ProductAreaType(enum.Enum):
     POLICIES = "Policies"
     BILLING = "Billing"
     CLAIMS = "Claims"
     REPORTS = "Reports"
+
+    @classmethod
+    def choices(cls):
+        return [(choice.name, choice.name) for choice in cls]
+
 
 
 class Feature(db.Model):
@@ -66,9 +81,11 @@ class Feature(db.Model):
     title = db.Column(db.String(60), unique=True)
     description = db.Column(db.String(200))
     client = db.Column(db.Enum(ClientType))
-    client_priority = db.Column(db.Integer)
-    target_date = db.Column(db.DateTime, default=datetime.utcnow)
+    client_priority = db.Column(db.Integer, unique=True, autoincrement=True)
+    target_date = db.Column(db.DateTime)
     product_area = db.Column(db.Enum(ProductAreaType))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.now)
 
 
     def __repr__(self):
