@@ -5,6 +5,7 @@ class Config(object):
     Common configurations
     """
     SQLALCHEMY_DATABASE_URI = os.environ.get("SQLALCHEMY_DATABASE_URI")
+    SECRET_KEY = os.environ.get("SECRET_KEY")
 
     # Put any configurations here that are common across all environments
 
