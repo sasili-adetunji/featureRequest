@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from config import app_config
+from flask_migrate import Migrate
 
 db = SQLAlchemy()
 
@@ -10,9 +11,14 @@ def create_app(config_name):
     app.config.from_object(app_config[config_name])
     db.init_app(app)
 
-    # temporary route
-    @app.route('/')
-    def hello_world():
-        return 'Hello, World! aagain'
+    migrate = Migrate(app, db)
+
+    from api import models
 
     return app
+    # temporary route
+    # @app.route('/')
+    # def hello_world():
+    #     return 'Hello, World! aagain'
+
+    # return app
