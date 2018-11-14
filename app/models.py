@@ -70,6 +70,21 @@ class ProductAreaType(enum.Enum):
 
 
 
+class Client(db.Model):
+    """
+    Create a Client table
+    """
+
+    __tablename__ = 'clients'
+
+    id = db.Column(db.Integer, primary_key=True)
+    client = db.Column(db.Enum(ClientType))
+    client_priority = db.Column(db.Integer, unique=True, autoincrement=True)
+    features = db.relationship('Feature', backref='client', lazy=True)
+
+    def __repr__(self):
+        return '<Client: {}>'.format(self.client)
+
 class Feature(db.Model):
     """
     Create a Feature table
@@ -80,8 +95,8 @@ class Feature(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(60), unique=True)
     description = db.Column(db.String(200))
-    client = db.Column(db.Enum(ClientType))
-    client_priority = db.Column(db.Integer, unique=True, autoincrement=True)
+    client_id = db.Column(db.Integer, db.ForeignKey('clients.id'),
+        nullable=False)    
     target_date = db.Column(db.DateTime)
     product_area = db.Column(db.Enum(ProductAreaType))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -89,4 +104,4 @@ class Feature(db.Model):
 
 
     def __repr__(self):
-        return '<Feature: {}>'.format(self.name)
+        return '<Feature: {}>'.format(self.title)

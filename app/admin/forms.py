@@ -21,4 +21,3 @@ class FeatureForm(FlaskForm):
     product_area = SelectField("Product Area", choices=ProductAreaType.choices())
     submit = SubmitField('Submit')
 
-

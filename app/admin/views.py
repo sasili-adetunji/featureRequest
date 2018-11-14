@@ -4,7 +4,7 @@ from flask_login import current_user, login_required
 from . import admin
 from .forms import FeatureForm
 from .. import db
-from ..models import Feature
+from ..models import Feature, Client
 
 
 def check_admin():
@@ -13,14 +13,14 @@ def check_admin():
         abort(403)
 
 
-# Department Views
+# feature requests Views
 
 
 @admin.route('/features', methods=['GET', 'POST'])
 @login_required
 def list_features():
     """
-    List all departments
+    List all feature requests
     """
     check_admin()
 
@@ -34,7 +34,7 @@ def list_features():
 @login_required
 def add_feature():
     """
-    Add a department to the database
+    Add a feature request to the database
     """
     check_admin()
 
@@ -42,21 +42,26 @@ def add_feature():
 
     form = FeatureForm()
     if form.validate_on_submit():
+        c = Client(client=form.client.data,
+                    client_priority = form.client_priority.data,
+                )
+        db.session.add(c)
+        db.session.commit()  
         feature = Feature(title=form.title.data,
                           description=form.description.data,
                           product_area=form.product_area.data,
                           target_date=form.target_date.data,
-                          client=form.client.data,
+                          client=c,
 
                   )
         try:
             # add feature to the database
             db.session.add(feature)
             db.session.commit()
-            flash('You have successfully added a new department.')
+            flash('You have successfully added a new feature requests.')
         except:
             # in case feature name already exists
-            flash('Error: department name already exists.')
+            flash('Error: feature requests name already exists.')
 
         # redirect to features page
         return redirect(url_for('admin.list_features'))
@@ -71,7 +76,7 @@ def add_feature():
 @login_required
 def edit_feature(id):
     """
-    Edit a feature
+    Edit a feature request
     """
     check_admin()
 
@@ -82,20 +87,20 @@ def edit_feature(id):
     if form.validate_on_submit():
         feature.title = form.title.data
         feature.description = form.description.data
-        feature.client = form.client.data
-        feature.client_priority = form.client_priority.data
+        feature.client.client = form.client.data
+        feature.client.client_priority = form.client_priority.data
         feature.target_date = form.target_date.data
         feature.product_area = form.product_area.data
         db.session.commit()
-        flash('You have successfully edited the department.')
+        flash('You have successfully edited the feature requests.')
 
         # redirect to the feature page
         return redirect(url_for('admin.list_features'))
 
     form.description.data = feature.description
     form.title.data = feature.title
-    form.client.data = feature.client
-    form.client_priority.data = feature.client_priority
+    form.client.data = feature.client.client
+    form.client_priority.data = feature.client.client_priority
     form.target_date.data = feature.target_date
     form.product_area.data = feature.product_area
 
@@ -108,14 +113,18 @@ def edit_feature(id):
 @login_required
 def delete_feature(id):
     """
-    Delete a department from the database
+    Delete a feature request from the database
     """
     check_admin()
 
     feature = Feature.query.get_or_404(id)
+    client = Client.query.get_or_404(feature.client.id)
     db.session.delete(feature)
     db.session.commit()
-    flash('You have successfully deleted the department.')
+    db.session.delete(client)
+    db.session.commit()
+
+    flash('You have successfully deleted the feature requests.')
 
     # redirect to the feature page
     return redirect(url_for('admin.list_features'))
