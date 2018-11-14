@@ -3,8 +3,6 @@
 {% block title %}
     {% if add_feature %}
     Request Feature
-    {% else %}
-        Edit Request
     {% endif %}
 {% endblock %}
 {% block body %}
@@ -15,8 +13,6 @@
         <div class="center">
             {% if add_feature %}
                 <h1>Request Feature</h1>
-            {% else %}
-                <h1>Edit Request</h1>
             {% endif %}
             <br/>
             {{ wtf.quick_form(form) }}

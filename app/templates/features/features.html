@@ -17,9 +17,12 @@
               <thead>
                 <tr>
                   <th width="15%"> Title </th>
-                  <th width="40%"> Description </th>
-                  <th width="15%"> Edit </th>
-                  <th width="15%"> Delete </th>
+                  <th width="15%"> Description </th>
+                  <th width="15%"> Client </th>
+                  <th width="15%"> Client Priority </th>
+                  <th width="15%"> Target Date </th>
+                  <th width="15%"> Product Area </th>
+
                 </tr>
               </thead>
               <tbody>
@@ -27,16 +30,11 @@
                 <tr>
                   <td> {{ feature.title }} </td>
                   <td> {{ feature.description }} </td>
-                  <td>
-                    <a href="{{ url_for('admin.edit_feature', id=feature.id) }}">
-                      <i class="fa fa-pencil"></i> Edit
-                    </a>
-                  </td>
-                  <td>
-                    <a href="{{ url_for('admin.delete_feature', id=feature.id) }}">
-                      <i class="fa fa-trash"></i> Delete
-                    </a>
-                  </td>
+                  <td> {{ feature.client.client.stringify(feature.client.client) }} </td>
+                  <td> {{ feature.client.client_priority }} </td>
+                  <td> {{ feature.target_date }} </td>
+                  <td> {{ feature.product_area.stringify(feature.product_area) }} </td>
+
                 </tr>
               {% endfor %}
               </tbody>

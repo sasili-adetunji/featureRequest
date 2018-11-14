@@ -45,6 +45,8 @@ def add_feature():
 
         clients = Client.query.filter_by(client=form.client.data).order_by("client_priority desc")
         priority_point = 1
+        new_c = None
+        # import pdb; pdb.set_trace()
         if priority_point < clients.count():
             for client_row in clients:
                 new_client  = client_row.client;
@@ -56,6 +58,13 @@ def add_feature():
                         )
                     db.session.add(new_c)
                     db.session.commit()
+        else:
+            new_c = Client(client=form.client.data,
+                            client_priority=form.client_priority.data,
+                    )
+            db.session.add(new_c)
+            db.session.commit()
+
         feature = Feature(title=form.title.data,
                           description=form.description.data,
                           product_area=form.product_area.data,
@@ -79,62 +88,3 @@ def add_feature():
     return render_template('features/feature.html', action="Add",
                            add_feature=add_feature, form=form,
                            title="Add Feature")
-
-
-@admin.route('/features/edit/<int:id>', methods=['GET', 'POST'])
-@login_required
-def edit_feature(id):
-    """
-    Edit a feature request
-    """
-    check_admin()
-
-    add_feature = False
-
-    feature = Feature.query.get_or_404(id)
-    form = FeatureForm(obj=feature)
-    if form.validate_on_submit():
-        feature.title = form.title.data
-        feature.description = form.description.data
-        feature.client.client = form.client.data
-        feature.client.client_priority = form.client_priority.data
-        feature.target_date = form.target_date.data
-        feature.product_area = form.product_area.data
-        db.session.commit()
-        flash('You have successfully edited the feature requests.')
-
-        # redirect to the feature page
-        return redirect(url_for('admin.list_features'))
-
-    form.description.data = feature.description
-    form.title.data = feature.title
-    form.client.data = feature.client.client
-    form.client_priority.data = feature.client.client_priority
-    form.target_date.data = feature.target_date
-    form.product_area.data = feature.product_area
-
-    return render_template('features/feature.html', action="Edit",
-                           add_feature=add_feature, form=form,
-                           feature=feature, title="Edit Feature")
-
-
-@admin.route('/features/delete/<int:id>', methods=['GET', 'POST'])
-@login_required
-def delete_feature(id):
-    """
-    Delete a feature request from the database
-    """
-    check_admin()
-
-    feature = Feature.query.get_or_404(id)
-    client = Client.query.get_or_404(feature.client.id)
-    db.session.delete(feature)
-    db.session.commit()
-    db.session.delete(client)
-    db.session.commit()
-
-    flash('You have successfully deleted the feature requests.')
-
-    # redirect to the feature page
-    return redirect(url_for('admin.list_features'))
-

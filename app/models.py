@@ -57,6 +57,11 @@ class ClientType(enum.Enum):
     def choices(cls):
         return [(choice.name, choice.name) for choice in cls]
 
+    @classmethod
+    def stringify(cls, val):
+        for choice in cls:
+            if choice.name==val.name:
+                return choice.value
 
 class ProductAreaType(enum.Enum):
     POLICIES = "Policies"
@@ -68,6 +73,11 @@ class ProductAreaType(enum.Enum):
     def choices(cls):
         return [(choice.name, choice.name) for choice in cls]
 
+    @classmethod
+    def stringify(cls, val):
+        for choice in cls:
+            if choice.name==val.name:
+                return choice.value
 
 
 class Client(db.Model):
