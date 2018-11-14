@@ -42,16 +42,25 @@ def add_feature():
 
     form = FeatureForm()
     if form.validate_on_submit():
-        c = Client(client=form.client.data,
-                    client_priority = form.client_priority.data,
-                )
-        db.session.add(c)
-        db.session.commit()  
+
+        clients = Client.query.filter_by(client=form.client.data).order_by("client_priority desc")
+        priority_point = 1
+        if priority_point < clients.count():
+            for client_row in clients:
+                new_client  = client_row.client;
+                new_client_priority = client_row.client_priority;
+
+                if new_client_priority >= form.client_priority.data:
+                    new_c = Client(client=new_client,
+                                client_priority=new_client_priority + 1,
+                        )
+                    db.session.add(new_c)
+                    db.session.commit()
         feature = Feature(title=form.title.data,
                           description=form.description.data,
                           product_area=form.product_area.data,
                           target_date=form.target_date.data,
-                          client=c,
+                          client=new_c,
 
                   )
         try:

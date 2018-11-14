@@ -79,7 +79,7 @@ class Client(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     client = db.Column(db.Enum(ClientType))
-    client_priority = db.Column(db.Integer, unique=True, autoincrement=True)
+    client_priority = db.Column(db.Integer)
     features = db.relationship('Feature', backref='client', lazy=True)
 
     def __repr__(self):
