@@ -4,15 +4,12 @@ from config import Config
 from flask_migrate import Migrate
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager
-from flask_babel import Babel, lazy_gettext as _l
 
-# db = SQLAlchemy()
-# login_manager = LoginManager()
 db = SQLAlchemy()
 migrate = Migrate()
 login = LoginManager()
 login.login_view = 'auth.login'
-login.login_message = _l('Please log in to access this page.')
+login.login_message = 'Please log in to access this page.'
 bootstrap = Bootstrap()
 
 
@@ -24,14 +21,6 @@ def create_app(config_class=Config):
     migrate.init_app(app, db)
     login.init_app(app)
     bootstrap.init_app(app)
-
-    # Bootstrap(app)
-
-    # db.init_app(app)
-    # login_manager.init_app(app)
-    # login_manager.login_message = "You must be logged in to access this page."
-    # login_manager.login_view = "auth.login"
-    # migrate = Migrate(app, db)
 
     from app import models
 

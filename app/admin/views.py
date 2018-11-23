@@ -8,7 +8,6 @@ from ..models import Feature, Client
 
 
 def check_admin():
-    # prevent non-admins from accessing the page
     if not current_user:
         abort(403)
 
@@ -46,7 +45,6 @@ def add_feature():
         clients = Client.query.filter_by(client=form.client.data).order_by("client_priority desc")
         priority_point = 1
         new_c = None
-        # import pdb; pdb.set_trace()
         if priority_point < clients.count():
             for client_row in clients:
                 new_client  = client_row.client;
