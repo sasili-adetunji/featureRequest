@@ -67,3 +67,4 @@ webargs==1.7.0
 Werkzeug==0.12.2
 wrapt==1.10.11
 WTForms==2.2.1
+Flask-Babel==0.12.2
